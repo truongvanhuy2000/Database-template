@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:latest
+    container_name: generic-docker-db
+    restart: always
+    ports:
+      - 127.0.0.1:3309:3306
+    env_file:
+      - ./env/mysql.env
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d # init database
+      - ./database/data:/var/lib/mysql # save data
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 20s
+      retries: 10
+    networks:
+      - cat
+
+  automatic-backup:
+    build:
+      context: ./automatic-backup
+    container_name: generic-db-automatic-backup
+    env_file:
+      - ./env/automatic-backup.env
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./automatic-backup/backup:/backup:rw
+      - ./automatic-backup/log:/var/log
+    networks:
+      - cat
+
+networks:
+  cat:
