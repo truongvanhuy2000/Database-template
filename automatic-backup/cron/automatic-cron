@@ -1,0 +1,8 @@
+# this cron is for daily backup
+0 0 * * * /app/script/backup.sh >> /var/log/cron.log 2>&1
+
+# * * * * * /app/script/backup.sh >> /var/log/cron.log 2>&1
+
+# must be ended with a new line "LF" (Unix) and not "CRLF" (Windows)
+0 0 * * * /app/script/remove.sh >> /var/log/cron.log 2>&1
+

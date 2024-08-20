@@ -1,0 +1,1 @@
+find /backup/*.gz -mtime +10 -exec rm -rf {} \;
